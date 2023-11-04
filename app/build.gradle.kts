@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -23,6 +25,7 @@ android {
         }
 
         val apiKey = project.properties["API_KEY"]
+        // 설정 후, clean 및 rebuild 필수
         buildConfigField("String", "API_KEY", apiKey as String)
     }
 
@@ -44,6 +47,8 @@ android {
     }
     buildFeatures {
         compose = true
+//        buildConfig가 true로 설정되어 있어야 사용 가능
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
