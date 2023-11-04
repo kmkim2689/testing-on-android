@@ -1,4 +1,4 @@
-package com.practice.testing_practice.data
+package com.practice.testing_practice.data.local
 
 import androidx.room.Database
 import androidx.room.RoomDatabase

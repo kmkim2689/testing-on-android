@@ -1,4 +1,4 @@
-package com.practice.testing_practice.data
+package com.practice.testing_practice.data.local
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

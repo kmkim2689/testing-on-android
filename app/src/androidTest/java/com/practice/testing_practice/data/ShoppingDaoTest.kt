@@ -6,6 +6,9 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
 import com.google.common.truth.Truth.assertThat
+import com.practice.testing_practice.data.local.ShoppingDao
+import com.practice.testing_practice.data.local.ShoppingItem
+import com.practice.testing_practice.data.local.ShoppingItemDatabase
 import com.practice.testing_practice.getOrAwaitValue
 import kotlinx.coroutines.test.runTest
 import org.junit.After
@@ -13,7 +16,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
 @SmallTest
