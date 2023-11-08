@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.practice.testing_practice.data.local.ShoppingItem
 import com.practice.testing_practice.data.remote.ImageResponse
 import com.practice.testing_practice.repository.ShoppingRepository
+import com.practice.testing_practice.util.Constants
 import com.practice.testing_practice.util.Event
 import com.practice.testing_practice.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -54,10 +55,53 @@ class ShoppingViewModel @Inject constructor(
 
     // validate the user input
     fun insertShoppingItem(name: String, amountAsString: String, priceAsString: String) {
-        // TODO After writing test case
+        if (name.isEmpty() || amountAsString.isEmpty() || priceAsString.isEmpty()) {
+            _insertShoppingItemStatus.postValue(Event(Resource.error("the fields should not be empty", null)))
+            return // @insertShoppingItem
+        }
+
+        if (name.length > Constants.MAX_NAME_LENGTH) {
+            _insertShoppingItemStatus.postValue(Event(Resource.error("the name of the itme" +
+                    "must not exceed ${Constants.MAX_NAME_LENGTH} characters", null)))
+            return // @insertShoppingItem
+        }
+
+        if (priceAsString.length > Constants.MAX_PRICE_LENGTH) {
+            _insertShoppingItemStatus.postValue(Event(Resource.error("the price of the itme" +
+                    "must not exceed ${Constants.MAX_PRICE_LENGTH} characters", null)))
+            return // @insertShoppingItem
+        }
+
+        val amount = try {
+            amountAsString.toInt()
+        } catch (e: Exception) {
+            _insertShoppingItemStatus.postValue(Event(Resource.error("please enter a valid amount", null)))
+            return // @insertShoppingItem
+        }
+
+        val shoppingItem = ShoppingItem(
+            name = name,
+            amount = amount,
+            price = priceAsString.toFloat(),
+            imageUrl = _currentImageUrl.value ?: ""
+        )
+
+        insertShoppingItemIntoDb(shoppingItem)
+        setCurrentImageUrl("") // 입력이 완료되면 초기화해야함. 여기서는 ViewModel을 여러 화면에서 공유하기 때문
+
+        // 마지막으로, 모든 작업이 성공적으로 이뤄졌음을 emit
+        _insertShoppingItemStatus.postValue(Event(Resource.success(shoppingItem)))
     }
 
     fun searchForImage(imageQuery: String) {
-        // TODO After writing test case
+        if (imageQuery.isEmpty()) {
+            return
+        }
+        _images.value = Event(Resource.loading(null))
+
+        viewModelScope.launch {
+            val response = repository.searchForImage(imageQuery)
+            _images.value = Event(response)
+        }
     }
 }
